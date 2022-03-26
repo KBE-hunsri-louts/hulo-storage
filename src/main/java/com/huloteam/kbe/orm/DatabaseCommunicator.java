@@ -1,36 +1,42 @@
 package com.huloteam.kbe.orm;
 
-import com.huloteam.kbe.model.ProductEntity;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import com.huloteam.kbe.model.ProductEntity;
 
 /**
  * Creates queries to search for product information.
- * psql -h localhost -p 5432 -U postgres -d kbestorage
  */
 public class DatabaseCommunicator {
-    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("persistenceUnitName");
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
-    EntityTransaction transaction = entityManager.getTransaction();
+    private final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("persistenceUnitName");
+    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
+    private final EntityTransaction transaction = entityManager.getTransaction();
 
     /**
-     * Searches for a product and send it back.
-     * @param productName is a name of a product which will be searched.
-     * @return a list of all ProductEntity's.
+     * Searches for a product and sends it back.
+     * @param productName is a string which will be used to search for a product.
+     * @return a list of product information.
      */
-    public List<ProductEntity> findProductEntity(String productName) {
+    public List<String> findProductEntity(String productName) {
+        List<String> returnStringList = new LinkedList<>();
+
         try {
             transaction.begin();
 
             TypedQuery<ProductEntity> productEntityTypedQuery = entityManager.createNamedQuery("ProductEntity.findOneProduct", ProductEntity.class);
-            productEntityTypedQuery.setParameter(1, productName);
+            productEntityTypedQuery.setParameter("name", productName);
 
             transaction.commit();
 
-            if (productEntityTypedQuery.getResultList().size() != 0) {
-                return productEntityTypedQuery.getResultList();
+            if (!productEntityTypedQuery.getResultList().isEmpty()) {
+                returnStringList.add(productEntityTypedQuery.getResultList().get(0).getProvider());
+                returnStringList.add(productEntityTypedQuery.getResultList().get(0).getProviderprice().toString());
+                returnStringList.add(productEntityTypedQuery.getResultList().get(0).getStoredsince().toString());
+
+                return returnStringList;
             } else {
                 return null;
             }
@@ -39,11 +45,18 @@ public class DatabaseCommunicator {
                 transaction.rollback();
             }
 
-            entityManager.close();
-            entityManagerFactory.close();
+            // entityManager.close();
+            // entityManagerFactory.close();
         }
     }
 
+    /**
+     * Inserts a new product into the postgres database.
+     * @param productName is a string and is used to find a product
+     * @param provider is a string and contains the provider of the product
+     * @param providerPrice is an int and contains the price which the salesman buys it from the provider
+     * @param storedSince is a timestamp which contains date and time
+     */
     public void pushNewObjectToDatabase(String productName, String provider, int providerPrice, Timestamp storedSince) {
         ProductEntity newProductEntity = new ProductEntity();
         newProductEntity.setName(productName);
@@ -62,8 +75,8 @@ public class DatabaseCommunicator {
                 transaction.rollback();
             }
 
-            entityManager.close();
-            entityManagerFactory.close();
+            // entityManager.close();
+            // entityManagerFactory.close();
         }
     }
 }
