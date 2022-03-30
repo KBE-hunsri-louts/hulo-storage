@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "product", schema = "public", catalog = "kbestorage")
-@NamedQuery(name = "ProductEntity.findOneProduct", query = "SELECT p FROM ProductEntity p WHERE p.name= ?1")
+@NamedQuery(name = "ProductEntity.findOneProduct", query = "SELECT p FROM ProductEntity p WHERE p.name = :name")
 public class ProductEntity {
 
     @Id
