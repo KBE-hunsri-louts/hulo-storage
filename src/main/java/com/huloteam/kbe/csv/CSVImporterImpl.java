@@ -11,7 +11,7 @@ import com.huloteam.kbe.orm.DatabaseCommunicator;
 import com.huloteam.kbe.validator.Validator;
 
 /**
- * Reads a csv file and
+ * Reads a csv file and sends it to orm.
  */
 public class CSVImporterImpl implements CSVImporter {
     private final static int AMOUNT_OF_CSV_ARGUMENTS = 4;

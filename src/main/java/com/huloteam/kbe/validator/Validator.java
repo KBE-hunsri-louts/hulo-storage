@@ -5,6 +5,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Checks if data matches a specific condition.
+ */
 public class Validator {
     /**
      * Checks if a string list is null
