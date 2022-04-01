@@ -15,12 +15,11 @@ import com.huloteam.kbe.validator.Validator;
  */
 public class CSVImporterImpl implements CSVImporter {
     private final static int AMOUNT_OF_CSV_ARGUMENTS = 4;
-    private final static String PATH = "D://Schule/AI Studium/KBE/Vorlesung/CSV Folder/";
 
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    private final File directoryPath = new File(PATH);
     private final DatabaseCommunicator databaseCommunicator = new DatabaseCommunicator();
     private final String[] productInformation = new String[AMOUNT_OF_CSV_ARGUMENTS];
+    private final CSVConfig csvConfig = new CSVConfig();
 
     @Override
     public void readCSV() {
@@ -54,12 +53,12 @@ public class CSVImporterImpl implements CSVImporter {
      * @return returns a file
      */
     private File getCurrentFile() {
-        String[] fileArray = directoryPath.list();
+        String[] fileArray = csvConfig.csvPath().list();
 
         if (Validator.isArrayNotNull(fileArray)) {
             if (fileArray.length > 0) {
-                String fileName = directoryPath.list()[0];
-                return new File(PATH + fileName);
+                String fileName = csvConfig.csvPath().list()[0];
+                return new File(csvConfig.environment.getProperty("CSV_PATH") + fileName);
             }
         }
 
