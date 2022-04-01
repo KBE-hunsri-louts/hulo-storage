@@ -19,7 +19,7 @@ public class CSVImporterImpl implements CSVImporter {
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private final DatabaseCommunicator databaseCommunicator = new DatabaseCommunicator();
     private final String[] productInformation = new String[AMOUNT_OF_CSV_ARGUMENTS];
-    private final CSVConfig csvConfig = new CSVConfig();
+    private final File csvPath = CSVConfig.getFile();
 
     @Override
     public void readCSV() {
@@ -53,12 +53,12 @@ public class CSVImporterImpl implements CSVImporter {
      * @return returns a file
      */
     private File getCurrentFile() {
-        String[] fileArray = csvConfig.csvPath().list();
+        String[] fileArray = csvPath.list();
 
         if (Validator.isArrayNotNull(fileArray)) {
             if (fileArray.length > 0) {
-                String fileName = csvConfig.csvPath().list()[0];
-                return new File(csvConfig.environment.getProperty("CSV_PATH") + fileName);
+                String fileName = csvPath.list()[0];
+                return new File(csvPath.getAbsolutePath() + "/" + fileName);
             }
         }
 
